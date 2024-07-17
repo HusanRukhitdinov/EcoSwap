@@ -1,0 +1,400 @@
+syntax="proto3";
+
+option go_package = "/genproto";
+
+package protos;
+
+message CreateItemRequest {
+    string name = 1;
+    string description = 2;
+    string categoryId = 3;
+    string condition = 4;
+    string swapPreference = 5;
+    string images = 6;
+}
+message CreateItemResponse{
+    string name = 1;
+    string description = 2;
+    string categoryId = 3;
+    string condition = 4;
+    string swapPreference = 5;
+    string ownerId = 6;
+    string status = 7;
+    string createdAt = 8;
+}
+
+message UpdateItemRequest{
+    string id = 1;
+    string name = 2;
+    string condition = 3;
+}
+message UpdateItemResponse{
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    string categoryId = 4;
+    string condition = 5;
+    string swapPreference = 6;
+    string ownerId = 7;
+    string status = 8;
+    string updatedAt = 9;
+}
+
+message DeleteItemRequest{
+    string itemId = 1;
+}
+message DeleteItemResponse{
+    string message = 1;
+}
+
+message GetAllItemsRequest{
+    string id = 1;
+    string name = 2;
+    string categoryId = 3;
+    string condition = 4;
+    string ownerId = 5;
+    string status = 6;
+    int64 limit = 7;
+    int64 offset = 8;
+}
+message Items{
+    string id = 1;
+    string name = 2;
+    string categoryId = 3;
+    string condition = 4;
+    string ownerId = 5;
+    string status = 6;
+}
+message GetAllItemsResponse{
+    repeated Items items = 1;
+    int32 total = 2;
+    int32 page = 3;
+    int32 limit = 4;
+}
+
+message GetByIdItemRequest{
+    string itemId = 1;
+}
+message GetByIdItemResponse{
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    string categoryId = 4;
+    string condition = 5;
+    string swapPreference = 6;
+    string ownerId = 7;
+    string status = 8;
+    string createdAt = 9;
+    string updatedAt = 10;
+}
+
+message SearchItemsAndFiltRequest{
+    string query = 1;
+    string category = 2;
+    string condition = 3;
+    int32 page = 4;
+    int32 limit = 5;
+}
+message SearchItemsAndFiltResponse{
+    repeated Items items = 1;
+    int32 total = 2;
+    int32 page = 3;
+    int32 limit = 4;
+}
+
+message CreateChangeSwapRequest {
+    string offeredItemId = 1;
+    string requestedItemId = 2;
+    string message = 3;
+}
+message CreateChangeSwapResponse{
+    string swapId = 1;
+    string offeredItemId = 2;
+    string requestedItemId = 3;
+    string requesterId = 4;
+    string ownerId = 5;
+    string status = 6;
+    string message = 7;
+    string createdAt = 8;
+}
+
+message UpdateAcceptSwapRequest{
+    string swapId = 1;
+}
+message UpdateAcceptSwapResponse{
+    string id = 1;
+    string offeredItemId = 2;
+    string requestedItemId = 3;
+    string requesterId = 4;
+    string ownerId = 5;
+    string status = 6;
+    string updatedAt = 7;
+}
+
+message UpdateRejactSwapRequest{
+    string swap_id = 1;
+    string reason = 2;
+}
+message UpdateRejactSwapResponse{
+    string id = 1;
+    string offeredItemId = 2;
+    string requestedItemId = 3;
+    string requesterId = 4;
+    string ownerId = 5;
+    string status = 6;
+    string reason = 7;
+    string updatedAt = 8;
+}
+
+message GetChangeSwapRequest{
+    string status = 1;
+    int32 page = 2;
+    int32 limit = 3;
+}
+message Swaps{
+    string Id = 1;
+    string offeredItemId = 2;
+    string requestedItemId = 3;
+    string requesterId = 4;
+    string ownerId = 5;
+    string status = 6;
+    string createdAt = 7;
+}
+message GetChangeSwapResponse{
+    repeated Swaps swaps = 1;
+    int32 total = 2;
+    int32 page = 3;
+    int32 limit = 4;
+}
+
+message CreateAddRecyclingCenterRequest{
+    string name = 1;
+    string addres = 2;
+    string acceptedMaterials = 3;
+    string workingHours = 4;
+    string contactNumber = 5;
+}
+message CreateAddRecyclingCenterResponse{
+    string id = 1;
+    string name = 2;
+    string addres = 3;
+    string acceptedMaterials = 4;
+    string workingHours = 5;
+    string contactNumber = 6;
+    string createdAt = 7;
+}
+
+message SearchRecyclingCenterRequest{
+    string material = 1;
+    int32 page = 2;
+    int32 limit = 3;
+}
+message Centers{
+    string id = 1;
+    string name = 2;
+    string addres = 3;
+    string acceptedMaterials = 4;
+    string workingHours = 5;
+    string contactNumber = 6;
+}
+message SearchRecyclingCenterResponse{
+    repeated Centers centers  = 1;
+    int32 total = 2;
+    int32 page = 3;
+    int32 limit = 4;
+}
+
+message Itemes{
+    string item_id = 1;
+    float weight = 2;
+    string material = 3;
+} 
+message CreteRecyclingSubmissionsRequest{
+    string centerId = 1;
+    string userId = 2;
+    repeated Itemes items = 3; 
+}
+message CreteRecyclingSubmissionsResponse{
+    string id = 1;
+    string centerId = 2;
+    string userId = 3;
+    repeated Itemes items = 4;
+    int32 ecoPointEarned = 5;
+    string createdAt = 6;
+}
+
+message CreateAddUserRatingRequest {
+    string user_id = 1;
+    float rating = 2;
+    string comment = 3;
+    string swap_id = 4;
+}
+
+message CreateAddUserRatingResponse {
+    string id = 1;
+    string user_id = 2;
+    string rater_id = 3;
+    float rating = 4;
+    string comment = 5;
+    string swap_id = 6;
+    string created_at = 7;
+}
+
+
+message GetUserRatingRequest {
+    string user_id = 1;
+    int32 page = 2;
+    int32 limit = 3;
+}
+
+message Rating {
+    string id = 1;
+    string rater_id = 2;
+    float rating = 3;
+    string comment = 4;
+    string swap_id = 5;
+    string created_at = 6;
+}
+
+message GetUserRatingResponse {
+    repeated Rating ratings = 1;
+    float average_rating = 2;
+    int32 total_ratings = 3;
+    int32 page = 4;
+    int32 limit = 5;
+}
+
+
+message CreateItemCategoryManagRequest{
+    string name = 1;
+    string description = 2;
+}
+message CreateItemCategoryManagResponse{
+    string Id = 1;
+    string name = 2;
+    string description = 3;
+    string createdAt = 4;
+}
+
+message GetStatisticsRequest{
+    string startDate = 1;
+    string endDate = 2;
+}
+message TopCategories{
+    string id = 1;
+    string name = 2;
+    int32 swapCount = 3;
+}
+message TopRecyclingCenters{
+    string id = 1;
+    string name = 2;
+    int32 submissionCount = 3;
+}
+message GetStatisticsResponse{
+    int32 totalSwaps = 1;
+    int32 totalRecycledItems = 2;
+    int32 totalEcoPointsEarned = 3;
+    repeated TopCategories topCategories = 4;
+    repeated TopRecyclingCenters topRecyclingCenters = 5;
+}
+
+message GetMonitoringUserActivityRequest{
+    string userId = 1;
+    string startDate = 2;
+    string endDate = 3;
+}
+message GetMonitoringUserActivityResponse{
+    string UserId = 1;
+    int32 swapInitiated = 2;
+    int32 swapComplated = 3;
+    int32 itemListed = 4;
+    int32 recyclingSubmissions = 5;
+    int32 ecoPointsEarned = 6;
+}
+
+message CreateEcoChallengeRequest{
+    string title = 1;
+    string description = 2;
+    string startDate = 3;
+    string endDate = 4;
+    int32 rewardPoints = 5;
+}
+message CreateEcoChallengeResponse{
+    string id = 1;
+    string title = 2;
+    string description = 3;
+    string startDate = 4;
+    string endDate = 5;
+    int32 rewardPoints = 6;
+    string createdAt = 7;
+}
+
+message CreateParticipateChallengeRequest{
+    string challengeId = 1;
+}
+message CreateParticipateChallengeResponse{
+    string challengeId = 1;
+    string userId = 2;
+    string status = 3;
+    string joinedAt = 4;
+}
+
+message UpdateEcoChallengeRresultRequest{
+    int32 recycledItemsCount = 1;
+    string challengeId = 2;
+}
+message UpdateEcoChallengeRresultResponse{
+    string challengeId = 1;
+    string userId = 2;
+    string status = 3;
+    int32  recycledItemsCount = 4;
+    string updatedAt = 5;
+}
+
+message CreateAddEcoTipsRequest{
+    string title = 1;
+    string content = 2;
+}
+message CreateAddEcoTipsResponse{
+    string id = 1;
+    string title = 2;
+    string content = 3;
+    string createdAt = 4;
+}
+
+message GetAddEcoTipsRequest{
+    int32 page = 1;
+    int32 limit = 2;
+}
+message GetAddEcoTipsResponse{
+    repeated CreateAddEcoTipsResponse tips = 1;
+    int32 total = 2;
+    int32 page = 3;
+    int32 limit = 4;
+}
+
+service EcoService {
+  rpc CreateItem (CreateItemRequest) returns (CreateItemResponse);
+  rpc UpdateItem (UpdateItemRequest) returns (UpdateItemResponse);
+  rpc DeleteItem (DeleteItemRequest) returns (DeleteItemResponse);
+  rpc GetAllItems (GetAllItemsRequest) returns (GetAllItemsResponse);
+  rpc GetByIdItem (GetByIdItemRequest) returns (GetByIdItemResponse);
+  rpc SearchItemsAndFilt (SearchItemsAndFiltRequest) returns (SearchItemsAndFiltResponse);
+  rpc CreateChangeSwap (CreateChangeSwapRequest) returns (CreateChangeSwapResponse);
+  rpc UpdateAcceptSwap (UpdateAcceptSwapRequest) returns (UpdateAcceptSwapResponse);
+  rpc UpdateRejectSwap (UpdateRejactSwapRequest) returns (UpdateRejactSwapResponse);
+  rpc GetChangeSwap (GetChangeSwapRequest) returns (GetChangeSwapResponse);
+  rpc CreateAddRecyclingCenter (CreateAddRecyclingCenterRequest) returns (CreateAddRecyclingCenterResponse);
+  rpc SearchRecyclingCenter (SearchRecyclingCenterRequest) returns (SearchRecyclingCenterResponse);
+  rpc CreateRecyclingSubmissions (CreteRecyclingSubmissionsRequest) returns (CreteRecyclingSubmissionsResponse);
+  rpc CreateAddUserRating (CreateAddUserRatingRequest) returns (CreateAddUserRatingResponse);
+  rpc GetUserRating (GetUserRatingRequest) returns (GetUserRatingResponse);
+  rpc CreateItemCategoryManag (CreateItemCategoryManagRequest) returns (CreateItemCategoryManagResponse);
+  rpc GetStatistics (GetStatisticsRequest) returns (GetStatisticsResponse);
+  rpc GetMonitoringUserActivity (GetMonitoringUserActivityRequest) returns (GetMonitoringUserActivityResponse);
+  rpc CreateEcoChallenge (CreateEcoChallengeRequest) returns (CreateEcoChallengeResponse);
+  rpc CreateParticipateChallenge (CreateParticipateChallengeRequest) returns (CreateParticipateChallengeResponse);
+  rpc UpdateEcoChallengeResult (UpdateEcoChallengeRresultRequest) returns (UpdateEcoChallengeRresultResponse);
+  rpc CreateAddEcoTips (CreateAddEcoTipsRequest) returns (CreateAddEcoTipsResponse);
+  rpc GetAddEcoTips (GetAddEcoTipsRequest) returns (GetAddEcoTipsResponse);
+}

@@ -1,0 +1,949 @@
+basePath: /
+definitions:
+  genproto.CreateAddEcoTipsRequest:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+    type: object
+  genproto.CreateAddRecyclingCenterRequest:
+    properties:
+      acceptedMaterials:
+        type: string
+      addres:
+        type: string
+      contactNumber:
+        type: string
+      name:
+        type: string
+      workingHours:
+        type: string
+    type: object
+  genproto.CreateAddUserRatingRequest:
+    properties:
+      comment:
+        type: string
+      rating:
+        type: number
+      swap_id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  genproto.CreateChangeSwapRequest:
+    properties:
+      message:
+        type: string
+      offeredItemId:
+        type: string
+      requestedItemId:
+        type: string
+    type: object
+  genproto.CreateEcoChallengeRequest:
+    properties:
+      description:
+        type: string
+      endDate:
+        type: string
+      rewardPoints:
+        type: integer
+      startDate:
+        type: string
+      title:
+        type: string
+    type: object
+  genproto.CreateItemCategoryManagRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  genproto.CreateItemRequest:
+    properties:
+      categoryId:
+        type: string
+      condition:
+        type: string
+      description:
+        type: string
+      images:
+        type: string
+      name:
+        type: string
+      swapPreference:
+        type: string
+    type: object
+  genproto.CreateParticipateChallengeRequest:
+    properties:
+      challengeId:
+        type: string
+    type: object
+  genproto.CreteRecyclingSubmissionsRequest:
+    properties:
+      centerId:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/genproto.Itemes'
+        type: array
+      userId:
+        type: string
+    type: object
+  genproto.Itemes:
+    properties:
+      item_id:
+        type: string
+      material:
+        type: string
+      weight:
+        type: number
+    type: object
+  genproto.UpdateEcoChallengeRresultRequest:
+    properties:
+      challengeId:
+        type: string
+      recycledItemsCount:
+        type: integer
+    type: object
+  genproto.UpdateItemRequest:
+    properties:
+      condition:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  genproto.UpdateRejactSwapRequest:
+    properties:
+      reason:
+        type: string
+      swap_id:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API service
+  version: "1.0"
+paths:
+  /api/eco-challenges:
+    post:
+      consumes:
+      - application/json
+      description: Create a new eco challenge
+      parameters:
+      - description: Create Eco Challenge
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.CreateEcoChallengeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create Eco Challenge
+      tags:
+      - EcoChallenge
+  /api/eco-challenges/participate:
+    post:
+      consumes:
+      - application/json
+      description: Participate in an eco challenge
+      parameters:
+      - description: Participate in Eco Challenge
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.CreateParticipateChallengeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Participate in Eco Challenge
+      tags:
+      - EcoChallenge
+  /api/eco-challenges/result:
+    put:
+      consumes:
+      - application/json
+      description: Update the result of an eco challenge
+      parameters:
+      - description: Update Eco Challenge Result
+        in: body
+        name: Update
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.UpdateEcoChallengeRresultRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Result Updated
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update Eco Challenge Result
+      tags:
+      - EcoChallenge
+  /api/eco-tips:
+    get:
+      consumes:
+      - application/json
+      description: Get eco tips with pagination
+      parameters:
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Eco Tips Retrieved
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Eco Tips
+      tags:
+      - EcoTips
+    post:
+      consumes:
+      - application/json
+      description: Create a new eco tip
+      parameters:
+      - description: Create Eco Tip
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.CreateAddEcoTipsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create Eco Tip
+      tags:
+      - EcoTips
+  /api/item:
+    post:
+      consumes:
+      - application/json
+      description: Create a new item
+      parameters:
+      - description: Create Item
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.CreateItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create Item
+      tags:
+      - Item
+  /api/item-categories:
+    post:
+      consumes:
+      - application/json
+      description: Create a new item category
+      parameters:
+      - description: Create Item Category
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.CreateItemCategoryManagRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create Item Category
+      tags:
+      - ItemCategory
+  /api/item/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update an existing item
+      parameters:
+      - description: Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update Item
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.UpdateItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Item Updated
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Update Item
+      tags:
+      - Item
+  /api/item/{item_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an item
+      parameters:
+      - description: Item ID
+        in: path
+        name: item_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Item Deleted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete Item
+      tags:
+      - Item
+    get:
+      consumes:
+      - application/json
+      description: Get an item by ID
+      parameters:
+      - description: Item ID
+        in: path
+        name: item_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Item Retrieved
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Item By ID
+      tags:
+      - Item
+  /api/items:
+    get:
+      consumes:
+      - application/json
+      description: Get all items
+      parameters:
+      - description: Item ID
+        in: query
+        name: id
+        type: string
+      - description: Item Name
+        in: query
+        name: name
+        type: string
+      - description: Category ID
+        in: query
+        name: category_id
+        type: string
+      - description: Condition
+        in: query
+        name: condition
+        type: string
+      - description: Owner ID
+        in: query
+        name: owner_id
+        type: string
+      - description: Status
+        in: query
+        name: status
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Items Retrieved
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get All Items
+      tags:
+      - Item
+  /api/items/search:
+    get:
+      consumes:
+      - application/json
+      description: Search and filter items
+      parameters:
+      - description: Search Query
+        in: query
+        name: query
+        type: string
+      - description: Category
+        in: query
+        name: category
+        type: string
+      - description: Condition
+        in: query
+        name: condition
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Items Retrieved
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Search and Filter Items
+      tags:
+      - Item
+  /api/recycling-center:
+    post:
+      consumes:
+      - application/json
+      description: Create a new recycling center
+      parameters:
+      - description: Create Add Recycling Center
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.CreateAddRecyclingCenterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Recycling Center Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create Add Recycling Center
+      tags:
+      - RecyclingCenter
+  /api/recycling-centers:
+    get:
+      consumes:
+      - application/json
+      description: Search for recycling centers based on material
+      parameters:
+      - description: Material
+        in: query
+        name: material
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Recycling Centers Retrieved
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Search Recycling Center
+      tags:
+      - RecyclingCenter
+  /api/recycling-submission:
+    post:
+      consumes:
+      - application/json
+      description: Create a new recycling submission
+      parameters:
+      - description: Create Recycling Submission
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.CreteRecyclingSubmissionsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Recycling Submission Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create Recycling Submission
+      tags:
+      - RecyclingSubmission
+  /api/statistics:
+    get:
+      consumes:
+      - application/json
+      description: Get statistics based on date range
+      parameters:
+      - description: Start Date
+        in: query
+        name: startDate
+        required: true
+        type: string
+      - description: End Date
+        in: query
+        name: endDate
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Statistics Retrieved
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Statistics
+      tags:
+      - Statistics
+  /api/swap:
+    post:
+      consumes:
+      - application/json
+      description: Create a new swap request
+      parameters:
+      - description: Create Change Swap
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.CreateChangeSwapRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Swap Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create Change Swap
+      tags:
+      - Swap
+  /api/swap/{swap_id}/accept:
+    put:
+      consumes:
+      - application/json
+      description: Accept a swap request
+      parameters:
+      - description: Swap ID
+        in: path
+        name: swap_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Swap Accepted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Accept Swap
+      tags:
+      - Swap
+  /api/swap/{swap_id}/reject:
+    put:
+      consumes:
+      - application/json
+      description: Reject a swap request
+      parameters:
+      - description: Swap ID
+        in: path
+        name: swap_id
+        required: true
+        type: string
+      - description: Reject Swap
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.UpdateRejactSwapRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Swap Rejected
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Reject Swap
+      tags:
+      - Swap
+  /api/swaps:
+    get:
+      consumes:
+      - application/json
+      description: Get swap requests based on status
+      parameters:
+      - description: Status
+        in: query
+        name: status
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Swaps Retrieved
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Change Swap
+      tags:
+      - Swap
+  /api/user-activity:
+    get:
+      consumes:
+      - application/json
+      description: Get user activity based on user ID and date range
+      parameters:
+      - description: User ID
+        in: query
+        name: userId
+        required: true
+        type: string
+      - description: Start Date
+        in: query
+        name: startDate
+        required: true
+        type: string
+      - description: End Date
+        in: query
+        name: endDate
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User Activity Retrieved
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Monitoring User Activity
+      tags:
+      - UserActivity
+  /api/user-ratings:
+    get:
+      consumes:
+      - application/json
+      description: Get user ratings based on user ID
+      parameters:
+      - description: User ID
+        in: query
+        name: user_id
+        required: true
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User Ratings Retrieved
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get User Rating
+      tags:
+      - UserRating
+    post:
+      consumes:
+      - application/json
+      description: Create a new user rating
+      parameters:
+      - description: Create Add User Rating
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.CreateAddUserRatingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User Rating Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Create Add User Rating
+      tags:
+      - UserRating
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

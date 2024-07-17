@@ -1,0 +1,454 @@
+basePath: /
+definitions:
+  genproto.AddEcoPointsRequest:
+    properties:
+      points:
+        type: integer
+      reason:
+        type: string
+      userid:
+        type: string
+    type: object
+  genproto.EditProfileRequest:
+    properties:
+      bio:
+        type: string
+      fullname:
+        type: string
+      userid:
+        type: string
+    type: object
+  genproto.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  genproto.LogoutRequest:
+    properties:
+      access_token:
+        type: string
+    type: object
+  genproto.RefreshTokenRequest:
+    properties:
+      refresh_token:
+        type: string
+    type: object
+  genproto.RegisterRequest:
+    properties:
+      email:
+        type: string
+      fullname:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  genproto.ResetPasswordRequest:
+    properties:
+      email:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: API service
+  version: "1.0"
+paths:
+  /api/user/{user_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User Deleted
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Delete User
+      tags:
+      - Auth
+  /api/user/{user_id}/eco-points:
+    get:
+      consumes:
+      - application/json
+      description: Get eco points for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Eco Points Retrieved
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Eco Points
+      tags:
+      - Auth
+  /api/user/{user_id}/eco-points/history:
+    get:
+      consumes:
+      - application/json
+      description: Get eco points history for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Eco Points History Retrieved
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Eco Points History
+      tags:
+      - Auth
+  /api/user/eco-points:
+    post:
+      consumes:
+      - application/json
+      description: Add eco points for a user
+      parameters:
+      - description: Add Eco Points
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.AddEcoPointsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Eco Points Added
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Add Eco Points
+      tags:
+      - Auth
+  /api/user/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user
+      parameters:
+      - description: Login
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login Successful
+          schema:
+            type: string
+        "401":
+          description: Bad Request
+          schema:
+            type: string
+        "403":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Login User
+      tags:
+      - Auth
+  /api/user/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout a user
+      parameters:
+      - description: Logout
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.LogoutRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User Logged Out
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Logout
+      tags:
+      - Auth
+  /api/user/profile/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a user's profile
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profile Retrieved
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get Profile
+      tags:
+      - Auth
+    put:
+      consumes:
+      - application/json
+      description: Edit a user's profile
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Edit Profile
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.EditProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profile Edited
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Edit Profile
+      tags:
+      - Auth
+  /api/user/refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: Refresh a user's token
+      parameters:
+      - description: Refresh Token
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token Refreshed
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Refresh Token
+      tags:
+      - Auth
+  /api/user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: Register
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Register Successful
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Register User
+      tags:
+      - Auth
+  /api/user/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Reset a user's password
+      parameters:
+      - description: Reset Password
+        in: body
+        name: Create
+        required: true
+        schema:
+          $ref: '#/definitions/genproto.ResetPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password Reset
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Reset Password
+      tags:
+      - Auth
+  /api/users:
+    get:
+      consumes:
+      - application/json
+      description: List users
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Users Listed
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: List Users
+      tags:
+      - Auth
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

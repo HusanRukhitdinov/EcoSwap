@@ -1,0 +1,1 @@
+drop table eco_challenges;
