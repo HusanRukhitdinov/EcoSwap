@@ -15,23 +15,21 @@ service AuthService {
     rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
     rpc Logout(LogoutRequest) returns (LogoutResponse);
     rpc GetEcoPoints(GetEcoPointsRequest) returns (GetEcoPointsResponse);
-    rpc AddEcoPoints(AddEcoPointsRequest) returns (AddEcoPointsResponse);
+    rpc AddEcoPoint(AddEcoPointsRequest) returns (AddEcoPointsResponse);
     rpc GetEcoPointsHistory(GetEcoPointsHistoryRequest) returns (GetEcoPointsHistoryResponse);
 }
 
 message RegisterRequest {
-    string username = 1;
-    string email = 2;
-    string password = 3;
-    string fullname = 4;
+    string email = 1;
+    string password = 2;
+    string fullname = 3;
 }
 
 message RegisterResponse {
     string id = 1;
-    string username = 2;
-    string email = 3;
-    string fullname = 4;
-    string created_at = 5;
+    string email = 2;
+    string fullname = 3;
+    string created_at = 4;
 }
 
 message LoginRequest {
@@ -51,12 +49,11 @@ message GetProfileRequest {
 
 message GetProfileResponse {
     string id = 1;
-    string username = 2;
-    string email = 3;
-    string fullname = 4;
-    int32 eco_points = 5;
-    string created_at = 6;
-    string updated_at = 7;
+    string email = 2;
+    string fullname = 3;
+    int32 eco_points = 4;
+    string created_at = 5;
+    string updated_at = 6;
 }
 
 message EditProfileRequest {
@@ -67,11 +64,10 @@ message EditProfileRequest {
 
 message EditProfileResponse {
     string id = 1;
-    string username = 2;
-    string email = 3;
-    string fullname = 4;
-    string bio = 5;
-    string updated_at = 6;
+    string email = 2;
+    string fullname = 3;
+    string bio = 4;
+    string updated_at = 5;
 }
 
 message ListUsersRequest {
@@ -88,9 +84,8 @@ message ListUsersResponse {
 
 message User {
     string id = 1;
-    string username = 2;
-    string fullname = 3;
-    int32 eco_points = 4;
+    string fullname = 2;
+    int32 eco_points = 3;
 }
 
 message DeleteUserRequest {
@@ -116,7 +111,6 @@ message RefreshTokenRequest {
 message RefreshTokenResponse {
     string access_token = 1;
     string refresh_token = 2;
-    int32 expires_in = 3;
 }
 
 message LogoutRequest {
@@ -134,7 +128,6 @@ message GetEcoPointsRequest {
 message GetEcoPointsResponse {
     string userid = 1;
     int32 eco_points = 2;
-    string last_updated = 3;
 }
 
 message AddEcoPointsRequest {

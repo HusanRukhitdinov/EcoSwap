@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"fmt"
 	pb "item_api/genproto"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -57,10 +59,22 @@ func (h *Handler) GetStatistics(gn *gin.Context) {
 	startDate := gn.Query("startDate")
 	endDate := gn.Query("endDate")
 
-	request := pb.GetStatisticsRequest{
-		StartDate: startDate,
-		EndDate:   endDate,
+	startDate1, err := time.Parse("2006-01-02", startDate)
+	if err != nil {
+		BadRequest(gn, fmt.Errorf("invalid start_date format. Use YYYY-MM-DD"))
+		return
 	}
+	endDate1, err := time.Parse("2006-01-02", endDate)
+	if err != nil {
+		BadRequest(gn, fmt.Errorf("invalid end_date format. Use YYYY-MM-DD"))
+		return
+	}
+
+	request := pb.GetStatisticsRequest{
+		StartDate: startDate1.Format(time.RFC3339),
+		EndDate:   endDate1.Format(time.RFC3339),
+	}
+
 	log.Printf("Received GetStatistics request: %+v", &request)
 
 	response, err := h.EcoService.GetStatistics(gn, &request)

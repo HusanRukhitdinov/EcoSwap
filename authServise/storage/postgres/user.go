@@ -2,37 +2,40 @@ package postgres
 
 import (
 	"database/sql"
+	"eco_system/config/logger"
 	pb "eco_system/genproto"
 	storage "eco_system/help"
 	"fmt"
 	"log"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 type UserRepository struct {
-	Db *sql.DB
+	Db    *sql.DB
+	Loger *slog.Logger
 }
 
 func NewUserRepository(db *sql.DB) *UserRepository {
-	return &UserRepository{Db: db}
+	return &UserRepository{Db: db, Loger: logger.NewLogger()}
 }
 
 func (repo *UserRepository) Register(request *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	id := uuid.NewString()
 	fmt.Println("sc++++")
 	_, err := repo.Db.Exec(`
-	INSERT INTO users(id, username, email, password, fullname, created_at)
-	VALUES($1, $2, $3, $4, $5, $6) `,
-		id, request.Username, request.Email, request.Password, request.Fullname, time.Now())
+	INSERT INTO users(id, email, password, fullname, created_at)
+	VALUES($1, $2, $3, $4, $5) `,
+		id, request.Email, request.Password, request.Fullname, time.Now())
 	if err != nil {
+		repo.Loger.Error(fmt.Sprintf("error getting data: %v",err))
 		log.Printf("Error in Register: %v", err)
 		return nil, err
 	}
 	return &pb.RegisterResponse{
 		Id:        id,
-		Username:  request.Username,
 		Email:     request.Email,
 		Fullname:  request.Fullname,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -42,12 +45,14 @@ func (repo *UserRepository) Register(request *pb.RegisterRequest) (*pb.RegisterR
 func (repo *UserRepository) Login(request *pb.LoginRequest) (*pb.LoginResponse, error) {
 	tokenResponse, err := repo.GENERATEJWTToken(request)
 	if err != nil {
+		repo.Loger.Error(fmt.Sprintf("error getting data: %v",err))
 		log.Printf("Error generate JWT token: %v", err)
 		return nil, err
 	}
 
 	_, err = repo.Db.Exec("UPDATE users SET refresh_token=$1 WHERE email=$2 AND password=$3", tokenResponse.RefreshToken, request.Email, request.Password)
 	if err != nil {
+		repo.Loger.Error(fmt.Sprintf("error getting data: %v",err))
 		log.Printf("Error update refresh token: %v", err)
 		return nil, err
 	}
@@ -55,20 +60,28 @@ func (repo *UserRepository) Login(request *pb.LoginRequest) (*pb.LoginResponse, 
 	return tokenResponse, nil
 }
 
-
 func (repo *UserRepository) GetProfile(request *pb.GetProfileRequest) (*pb.GetProfileResponse, error) {
-	var profRespons pb.GetProfileResponse
-	err := repo.Db.QueryRow("SELECT id, username, email, fullname, ecopoints, created_at, updated_at FROM users WHERE id = $1", request.Userid).Scan(&profRespons.Id, &profRespons.Username, &profRespons.Email, &profRespons.Fullname, &profRespons.EcoPoints, &profRespons.CreatedAt, &profRespons.UpdatedAt)
+	var profResponse pb.GetProfileResponse
+
+	query := "SELECT id, email, fullname, ecopoints, created_at, updated_at FROM users WHERE id = $1"
+	err := repo.Db.QueryRow(query, request.Userid).Scan(&profResponse.Id, &profResponse.Email, &profResponse.Fullname, &profResponse.EcoPoints, &profResponse.CreatedAt, &profResponse.UpdatedAt)
+
 	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Printf("No user found with id: %v", request.Userid)
+			return nil, fmt.Errorf("no user found with id: %v", request.Userid)
+		}
 		log.Printf("Error in GetProfile: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("error retrieving profile: %v", err)
 	}
-	return &profRespons, nil
+
+	return &profResponse, nil
 }
 
 func (repo *UserRepository) EditProfile(request *pb.EditProfileRequest) (*pb.EditProfileResponse, error) {
 	_, err := repo.Db.Exec("UPDATE users SET fullname = $1, bio = $2, updated_at = $3 WHERE id = $4", request.Fullname, request.Bio, time.Now(), request.Userid)
 	if err != nil {
+		repo.Loger.Error(fmt.Sprintf("error getting data: %v",err))
 		log.Printf("Error in EditProfile: %v", err)
 		return nil, err
 	}
@@ -96,10 +109,11 @@ func (repo *UserRepository) ListUsers(request *pb.ListUsersRequest) (*pb.ListUse
 		filter += " LIMIT :limit"
 	}
 
-	query := "SELECT id, username, fullname, ecopoints FROM users WHERE deleted_at IS NULL" + filter
+	query := "SELECT id, fullname, ecopoints FROM users WHERE deleted_at IS NULL" + filter
 	query, arr = storage.ReplaceQueryParams(query, params)
 	rows, err := repo.Db.Query(query, arr...)
 	if err != nil {
+		repo.Loger.Error(fmt.Sprintf("error getting data: %v",err))
 		log.Printf("Error in ListUsers: %v", err)
 		return nil, err
 	}
@@ -108,8 +122,9 @@ func (repo *UserRepository) ListUsers(request *pb.ListUsersRequest) (*pb.ListUse
 	var users []*pb.User
 	for rows.Next() {
 		var userResponse pb.User
-		err := rows.Scan(&userResponse.Id, &userResponse.Username, &userResponse.Fullname, &userResponse.EcoPoints)
+		err := rows.Scan(&userResponse.Id, &userResponse.Fullname, &userResponse.EcoPoints)
 		if err != nil {
+			repo.Loger.Error(fmt.Sprintf("error getting data: %v",err))
 			log.Printf("Error in ListUsers (row scan): %v", err)
 			return nil, err
 		}
@@ -126,6 +141,7 @@ func (repo *UserRepository) ListUsers(request *pb.ListUsersRequest) (*pb.ListUse
 func (repo *UserRepository) DeleteUser(request *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
 	_, err := repo.Db.Exec("UPDATE users SET deleted_at = current_timestamp WHERE id = $1 AND deleted_at IS NULL", request.Userid)
 	if err != nil {
+		repo.Loger.Error(fmt.Sprintf("error getting data: %v",err))
 		log.Printf("Error in DeleteUser: %v", err)
 		return nil, err
 	}
@@ -135,6 +151,7 @@ func (repo *UserRepository) DeleteUser(request *pb.DeleteUserRequest) (*pb.Delet
 func (repo *UserRepository) ResetPassword(request *pb.ResetPasswordRequest) (*pb.ResetPasswordResponse, error) {
 	_, err := repo.Db.Exec("UPDATE users SET password= $1 WHERE email = $2 AND deleted_at IS NULL", "new_password", request.Email)
 	if err != nil {
+		repo.Loger.Error(fmt.Sprintf("error getting data: %v",err))
 		log.Printf("Error in ResetPassword: %v", err)
 		return nil, err
 	}
@@ -142,15 +159,15 @@ func (repo *UserRepository) ResetPassword(request *pb.ResetPasswordRequest) (*pb
 }
 
 func (repo *UserRepository) RefreshToken(request *pb.RefreshTokenRequest) (*pb.RefreshTokenResponse, error) {
-	_, err := repo.Db.Exec("INSERT INTO refresh_tokens(user_id, token, expires_at, created_at) VALUES ($1, $2, $3, $4)", "user_id", request.RefreshToken, time.Now().Add(24*time.Hour), time.Now())
+	_, err := repo.Db.Exec("INSERT INTO users (refresh_token) VALUES ($1)", request.RefreshToken)
 	if err != nil {
+		repo.Loger.Error(fmt.Sprintf("error getting data: %v",err))
 		log.Printf("Error in RefreshToken: %v", err)
 		return nil, err
 	}
 	return &pb.RefreshTokenResponse{
 		AccessToken:  "new_access_token",
 		RefreshToken: request.RefreshToken,
-		ExpiresIn:    86400,
 	}, nil
 }
 
@@ -158,10 +175,11 @@ func (repo *UserRepository) Logout(request *pb.LogoutRequest) (*pb.LogoutRespons
 	return &pb.LogoutResponse{Message: "User logged out successfully"}, nil
 }
 
-func (repo *UserRepository) GetEcoPoint(request *pb.GetEcoPointsRequest) (*pb.GetEcoPointsResponse, error) {
+func (repo *UserRepository) GetEcoPoints(request *pb.GetEcoPointsRequest) (*pb.GetEcoPointsResponse, error) {
 	var ecoPointsResponse pb.GetEcoPointsResponse
-	err := repo.Db.QueryRow("SELECT user_id, eco_points, last_updated FROM eco_points WHERE user_id = $1", request.Userid).Scan(&ecoPointsResponse.Userid, &ecoPointsResponse.EcoPoints, &ecoPointsResponse.LastUpdated)
+	err := repo.Db.QueryRow("SELECT user_id, ecopoints FROM users WHERE user_id = $1", request.Userid).Scan(&ecoPointsResponse.Userid, &ecoPointsResponse.EcoPoints)
 	if err != nil {
+		repo.Loger.Error(fmt.Sprintf("error getting data: %v",err))
 		log.Printf("Error in GetEcoPoint: %v", err)
 		return nil, err
 	}
@@ -169,8 +187,9 @@ func (repo *UserRepository) GetEcoPoint(request *pb.GetEcoPointsRequest) (*pb.Ge
 }
 
 func (repo *UserRepository) AddEcoPoint(request *pb.AddEcoPointsRequest) (*pb.AddEcoPointsResponse, error) {
-	_, err := repo.Db.Exec("INSERT INTO eco_points(user_id, points, reason, timestamp) VALUES ($1, $2, $3, $4)", request.Userid, request.Points, request.Reason, time.Now())
+	_, err := repo.Db.Exec("INSERT INTO users(user_id, ecopoints, reason, timestamp) VALUES ($1, $2, $3, $4)", request.Userid, request.Points, request.Reason, time.Now())
 	if err != nil {
+		repo.Loger.Error(fmt.Sprintf("error getting data: %v",err))
 		log.Printf("Error in AddEcoPoint: %v", err)
 		return nil, err
 	}
@@ -203,6 +222,7 @@ func (repo *UserRepository) GetEcoPointsHistory(request *pb.GetEcoPointsHistoryR
 	query, arr = storage.ReplaceQueryParams(query, params)
 	rows, err := repo.Db.Query(query, arr...)
 	if err != nil {
+		repo.Loger.Error(fmt.Sprintf("error getting data: %v",err))
 		log.Printf("Error in GetEcoPointsHistory: %v", err)
 		return nil, err
 	}
@@ -213,6 +233,7 @@ func (repo *UserRepository) GetEcoPointsHistory(request *pb.GetEcoPointsHistoryR
 		var ecoPointsHistory pb.EcoPointsHistory
 		err := rows.Scan(&ecoPointsHistory.Id, &ecoPointsHistory.Points, &ecoPointsHistory.Type, &ecoPointsHistory.Reason, &ecoPointsHistory.Timestamp)
 		if err != nil {
+			repo.Loger.Error(fmt.Sprintf("error getting data: %v",err))
 			log.Printf("Error in GetEcoPointsHistory (row scan): %v", err)
 			return nil, err
 		}

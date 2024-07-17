@@ -34,16 +34,16 @@ func RouterApi(authService *service.UserService) *gin.Engine {
 	{
 		users.POST("/register", h.RegisterUser)
 		users.POST("/login", h.LoginUser)
-		users.POST("/reset_password", h.ResetPassword)
-		users.POST("/refresh_token", h.RefreshToken)
+		users.POST("/reset-password", h.ResetPassword)
+		users.POST("/refresh-token", h.RefreshToken)
 		users.POST("/logout", h.Logout)
-		users.GET("/users", h.GetProfile)
-		users.PUT("/:id", h.EditProfile)
-		users.GET("/", h.ListUsers)
-		users.DELETE("/:id", h.DeleteUser)
-		users.GET("/eco_points", h.GetEcoPoints)
-		users.POST("/eco_points", h.AddEcoPoints)
-		users.GET("/eco_points_history", h.GetEcoPointsHistory)
+		users.GET("/profile/:user_id", h.GetProfile)
+		users.PUT("/profile/:user_id", h.EditProfile)
+		users.GET("/users", h.ListUsers)
+		users.DELETE("/:user_id", h.DeleteUser)
+		users.GET("/:user_id/eco-points", h.GetEcoPoints)
+		users.POST("/eco-points", h.AddEcoPoint)
+		users.GET("/eco-points/history:user_id", h.GetEcoPointsHistory)
 	}
 	return router
 }

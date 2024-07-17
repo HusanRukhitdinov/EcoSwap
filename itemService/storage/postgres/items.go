@@ -20,7 +20,8 @@ func NewItemRepository(db *sql.DB) *ItemRepository {
 }
 
 func (repo *ItemRepository) CreateItem(request *pb.CreateItemRequest) (*pb.CreateItemResponse, error) {
-	_, err := repo.Db.Exec("INSERT INTO items (name, description, category_id, condition, swap_preference, images, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7)", request.Name, request.Description, request.CategoryId, request.Condition, request.SwapPreference, request.Images, time.Now())
+	_, err := repo.Db.Exec("INSERT INTO items (name, description, category_id, condition, swap_preference, images, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+	 request.Name, request.Description, request.CategoryId, request.Condition, request.SwapPreference, request.Images, time.Now())
 	if err != nil {
 		repo.lg.Error(fmt.Sprintf("message create item error -> %v", err))
 		return nil, err
@@ -108,7 +109,8 @@ func (repo *ItemRepository) GetAllItems(request *pb.GetAllItemsRequest) (*pb.Get
 
 func (repo *ItemRepository) GetByIdItem(request *pb.GetByIdItemRequest) (*pb.GetByIdItemResponse, error) {
 	var response pb.GetByIdItemResponse
-	err := repo.Db.QueryRow("SELECT id, name, description, category_id, condition, swap_preference, owner_id, status, created_at, updated_at FROM items WHERE deleted_at IS NULL AND id = $1", request.ItemId).Scan(&response.Id, &response.Name, &response.Description, &response.CategoryId, &response.Condition, &response.SwapPreference, &response.OwnerId, &response.Status, &response.CreatedAt, &response.UpdatedAt)
+	err := repo.Db.QueryRow("SELECT id, name, description, category_id, condition, swap_preference, owner_id, status, created_at, updated_at FROM items WHERE deleted_at IS NULL AND id = $1", request.ItemId).
+	Scan(&response.Id, &response.Name, &response.Description, &response.CategoryId, &response.Condition, &response.SwapPreference, &response.OwnerId, &response.Status, &response.CreatedAt, &response.UpdatedAt)
 	if err != nil {
 		repo.lg.Error(fmt.Sprintf("message get by id item error -> %v", err))
 		return nil, err

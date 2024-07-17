@@ -43,9 +43,9 @@ func (repo *ItemCategoryRepository) GetStatistics(request *pb.GetStatisticsReque
 		return nil, err
 	}
 
-	err = repo.Db.QueryRow(`SELECT COUNT(*) FROM recycled_items WHERE created_at BETWEEN $1 AND $2`, startDate, endDate).Scan(&totalRecycledItems)
+	err = repo.Db.QueryRow(`SELECT COUNT(*) FROM recycled_items_count WHERE created_at BETWEEN $1 AND $2`, startDate, endDate).Scan(&totalRecycledItems)
 	if err != nil {
-		repo.lg.Error(fmt.Sprintf("message get total recycled items error -> %v", err))
+		repo.lg.Error(fmt.Sprintf("message get total recycled_items_count error -> %v", err))
 		return nil, err
 	}
 
@@ -76,7 +76,7 @@ func (repo *ItemCategoryRepository) GetStatistics(request *pb.GetStatisticsReque
 	}
 
 	rows, err = repo.Db.Query(`SELECT id, name, COUNT(*) as submissions_count FROM recycling_centers
-	JOIN recycled_items ON recycling_centers.id = recycled_items.center_id WHERE recycled_items.created_at BETWEEN $1 AND $2
+	JOIN recycled_items_count ON recycling_centers.id = recycled_items_count.center_id WHERE recycled_items_count.created_at BETWEEN $1 AND $2
 	GROUP BY id, name ORDER BY submissions_count DESC LIMIT 10`, startDate, endDate)
 	if err != nil {
 		repo.lg.Error(fmt.Sprintf("message get top recycling centers error -> %v", err))
@@ -126,7 +126,7 @@ func (repo *ItemCategoryRepository) GetMonitoringUserActivity(request *pb.GetMon
 		return nil, err
 	}
 
-	err = repo.Db.QueryRow(`SELECT COUNT(*) FROM recycled_items WHERE user_id = $1 AND submitted_at BETWEEN $2 AND $3`, request.UserId, request.StartDate, request.EndDate).Scan(&recyclingSubmissions)
+	err = repo.Db.QueryRow(`SELECT COUNT(*) FROM recycled_items_count WHERE user_id = $1 AND submitted_at BETWEEN $2 AND $3`, request.UserId, request.StartDate, request.EndDate).Scan(&recyclingSubmissions)
 	if err != nil {
 		return nil, err
 	}

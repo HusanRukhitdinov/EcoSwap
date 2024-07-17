@@ -2,21 +2,25 @@ package service
 
 import (
 	"context"
+	"eco_system/config/logger"
 	pb "eco_system/genproto"
 	"eco_system/storage/postgres"
+	"log/slog"
 )
 
 type UserService struct {
 	UserRepo *postgres.UserRepository
+	Loger   *slog.Logger
 	pb.UnimplementedAuthServiceServer
 }
 
 func NewUserService(repo *postgres.UserRepository) *UserService {
-	return &UserService{UserRepo: repo}
+	return &UserService{UserRepo: repo,Loger: logger.NewLogger()}
 }
 
 func (service *UserService) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	return service.UserRepo.Register(in)
+	
 }
 func (service *UserService) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginResponse, error) {
 	return service.UserRepo.Login(in)
@@ -30,7 +34,7 @@ func (service *UserService) EditProfile(ctx context.Context, in *pb.EditProfileR
 func (service *UserService) ListUsers(ctx context.Context, in *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
 	return service.UserRepo.ListUsers(in)
 }
-func (service *UserService) DeleteUser(ctx context.Context,in *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
+func (service *UserService) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
 	return service.UserRepo.DeleteUser(in)
 }
 func (service *UserService) ResetPassword(ctx context.Context, in *pb.ResetPasswordRequest) (*pb.ResetPasswordResponse, error) {
@@ -42,8 +46,8 @@ func (service *UserService) RefreshToken(ctx context.Context, in *pb.RefreshToke
 func (service *UserService) Logout(ctx context.Context, in *pb.LogoutRequest) (*pb.LogoutResponse, error) {
 	return service.UserRepo.Logout(in)
 }
-func (service *UserService) GetEcoPoint(ctx context.Context, in *pb.GetEcoPointsRequest) (*pb.GetEcoPointsResponse, error) {
-	return service.UserRepo.GetEcoPoint(in)
+func (service *UserService) GetEcoPoints(ctx context.Context, in *pb.GetEcoPointsRequest) (*pb.GetEcoPointsResponse, error) {
+	return service.UserRepo.GetEcoPoints(in)
 }
 func (service *UserService) AddEcoPoint(ctx context.Context, in *pb.AddEcoPointsRequest) (*pb.AddEcoPointsResponse, error) {
 	return service.UserRepo.AddEcoPoint(in)

@@ -32,7 +32,7 @@ type AuthServiceClient interface {
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
 	GetEcoPoints(ctx context.Context, in *GetEcoPointsRequest, opts ...grpc.CallOption) (*GetEcoPointsResponse, error)
-	AddEcoPoints(ctx context.Context, in *AddEcoPointsRequest, opts ...grpc.CallOption) (*AddEcoPointsResponse, error)
+	AddEcoPoint(ctx context.Context, in *AddEcoPointsRequest, opts ...grpc.CallOption) (*AddEcoPointsResponse, error)
 	GetEcoPointsHistory(ctx context.Context, in *GetEcoPointsHistoryRequest, opts ...grpc.CallOption) (*GetEcoPointsHistoryResponse, error)
 }
 
@@ -134,9 +134,9 @@ func (c *authServiceClient) GetEcoPoints(ctx context.Context, in *GetEcoPointsRe
 	return out, nil
 }
 
-func (c *authServiceClient) AddEcoPoints(ctx context.Context, in *AddEcoPointsRequest, opts ...grpc.CallOption) (*AddEcoPointsResponse, error) {
+func (c *authServiceClient) AddEcoPoint(ctx context.Context, in *AddEcoPointsRequest, opts ...grpc.CallOption) (*AddEcoPointsResponse, error) {
 	out := new(AddEcoPointsResponse)
-	err := c.cc.Invoke(ctx, "/protos.AuthService/AddEcoPoints", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protos.AuthService/AddEcoPoint", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +166,7 @@ type AuthServiceServer interface {
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error)
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
 	GetEcoPoints(context.Context, *GetEcoPointsRequest) (*GetEcoPointsResponse, error)
-	AddEcoPoints(context.Context, *AddEcoPointsRequest) (*AddEcoPointsResponse, error)
+	AddEcoPoint(context.Context, *AddEcoPointsRequest) (*AddEcoPointsResponse, error)
 	GetEcoPointsHistory(context.Context, *GetEcoPointsHistoryRequest) (*GetEcoPointsHistoryResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
@@ -205,8 +205,8 @@ func (UnimplementedAuthServiceServer) Logout(context.Context, *LogoutRequest) (*
 func (UnimplementedAuthServiceServer) GetEcoPoints(context.Context, *GetEcoPointsRequest) (*GetEcoPointsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEcoPoints not implemented")
 }
-func (UnimplementedAuthServiceServer) AddEcoPoints(context.Context, *AddEcoPointsRequest) (*AddEcoPointsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddEcoPoints not implemented")
+func (UnimplementedAuthServiceServer) AddEcoPoint(context.Context, *AddEcoPointsRequest) (*AddEcoPointsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddEcoPoint not implemented")
 }
 func (UnimplementedAuthServiceServer) GetEcoPointsHistory(context.Context, *GetEcoPointsHistoryRequest) (*GetEcoPointsHistoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEcoPointsHistory not implemented")
@@ -404,20 +404,20 @@ func _AuthService_GetEcoPoints_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AuthService_AddEcoPoints_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AuthService_AddEcoPoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddEcoPointsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServiceServer).AddEcoPoints(ctx, in)
+		return srv.(AuthServiceServer).AddEcoPoint(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protos.AuthService/AddEcoPoints",
+		FullMethod: "/protos.AuthService/AddEcoPoint",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).AddEcoPoints(ctx, req.(*AddEcoPointsRequest))
+		return srv.(AuthServiceServer).AddEcoPoint(ctx, req.(*AddEcoPointsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -488,8 +488,8 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_GetEcoPoints_Handler,
 		},
 		{
-			MethodName: "AddEcoPoints",
-			Handler:    _AuthService_AddEcoPoints_Handler,
+			MethodName: "AddEcoPoint",
+			Handler:    _AuthService_AddEcoPoint_Handler,
 		},
 		{
 			MethodName: "GetEcoPointsHistory",

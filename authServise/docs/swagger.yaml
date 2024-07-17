@@ -43,8 +43,6 @@ definitions:
         type: string
       password:
         type: string
-      username:
-        type: string
     type: object
   genproto.ResetPasswordRequest:
     properties:

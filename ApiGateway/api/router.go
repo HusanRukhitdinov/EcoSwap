@@ -2,7 +2,6 @@ package api
 
 import (
 	handlers "item_api/api/handler"
-	// middleware "item_api/api/middlewere"
 	_ "item_api/docs"
 	genproto "item_api/genproto"
 
@@ -32,31 +31,31 @@ func RouterApi(con1 *grpc.ClientConn, con2 *grpc.ClientConn) *gin.Engine {
 	// authRoutes.Use(middleware.MiddleWare())
 	
 
-		items := authRoutes.Group("/api/ecoSwap")
+		items := authRoutes.Group("/api")
 		{
 			items.POST("/create", h.CreateItem)
-			items.PUT("/:id", h.UpdateItem)
-			items.DELETE("/:id", h.DeleteItem)
-			items.GET("/", h.GetAllItems)
-			items.GET("/:id", h.GetByIdItem)
+			items.PUT("/update:id", h.UpdateItem)
+			items.DELETE("/delete:id", h.DeleteItem)
+			items.GET("/getall", h.GetAllItems)
+			items.GET("/getid:id", h.GetByIdItem)
 			items.GET("/search", h.SearchItemsAndFilt)
-			items.POST("/change_swap", h.CreateChangeSwap)
-			items.PUT("/accept_swap/:id", h.UpdateAcceptSwap)
-			items.PUT("/reject_swap/:id", h.UpdateRejactSwap)
-			items.GET("/change_swap/:id", h.GetChangeSwap)
-			items.POST("/recycling_center", h.CreateAddRecyclingCenter)
-			items.GET("/recycling_center", h.SearchRecyclingCenter)
-			items.POST("/recycling_submissions/:id", h.CreteRecyclingSubmissions)
-			items.POST("/user_rating/:id", h.CreateAddUserRating)
-			items.GET("/user_rating/:id", h.GetUserRating)
-			items.POST("/item_category", h.CreateItemCategoryManag)
+			items.POST("/change-swap", h.CreateChangeSwap)
+			items.PUT("/accept-swap/:id", h.UpdateAcceptSwap)
+			items.PUT("/reject-swap/:id", h.UpdateRejactSwap)
+			items.GET("/change-swap/:id", h.GetChangeSwap)
+			items.POST("/recycling-center", h.CreateAddRecyclingCenter)
+			items.GET("/recycling-center", h.SearchRecyclingCenter)
+			items.POST("/recycling-submissions/:id", h.CreteRecyclingSubmissions)
+			items.POST("/user-rating/:id", h.CreateAddUserRating)
+			items.GET("/user-rating/:id", h.GetUserRating)
+			items.POST("/item-category", h.CreateItemCategoryManag)
 			items.GET("/statistics", h.GetStatistics)
-			items.GET("/monitoring_user_activity/:id", h.GetMonitoringUserActivity)
-			items.POST("/eco_challenge", h.CreateEcoChallenge)
-			items.POST("/participate_challenge", h.CreateParticipateChallenge)
-			items.PUT("/eco_challenge_result", h.UpdateEcoChallengeResult)
-			items.POST("/eco_tips/:id", h.CreateAddEcoTips)
-			items.GET("/eco_tips/:id", h.GetAddEcoTips)
+			items.GET("/monitoring-user-activity/:id", h.GetMonitoringUserActivity)
+			items.POST("/eco-challenge", h.CreateEcoChallenge)
+			items.POST("/participate-challenge", h.CreateParticipateChallenge)
+			items.PUT("/eco-challenge-result", h.UpdateEcoChallengeResult)
+			items.POST("/eco-tips/:id", h.CreateAddEcoTips)
+			items.GET("/eco-tips/:id", h.GetAddEcoTips)
 		}
 		return router
 	}

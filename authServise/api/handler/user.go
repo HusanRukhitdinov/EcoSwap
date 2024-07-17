@@ -50,11 +50,6 @@ func (h *Handler) RegisterUser(gn *gin.Context) {
 		return
 	}
 
-	if len(request.Username) < 4 {
-		BadRequest(gn, fmt.Errorf("username is not valid"))
-		return
-	}
-
 	if len(request.Email) < 7 || !strings.Contains(request.Email, "@gmail.com") {
 		BadRequest(gn, fmt.Errorf("email is not valid"))
 		return
@@ -373,14 +368,14 @@ func (h *Handler) GetEcoPoints(gn *gin.Context) {
 // @Failure 400 {string} string "Bad Request"
 // @Failure 500 {string} string "Internal Server Error"
 // @Router /api/user/eco-points [post]
-func (h *Handler) AddEcoPoints(gn *gin.Context) {
+func (h *Handler) AddEcoPoint(gn *gin.Context) {
 	request := pb.AddEcoPointsRequest{}
 	if err := gn.ShouldBindJSON(&request); err != nil {
 		BadRequest(gn, err)
 		return
 	}
 
-	response, err := h.AuthService.AddEcoPoints(gn, &request)
+	response, err := h.AuthService.AddEcoPoint(gn, &request)
 	if err != nil {
 		InternalServerError(gn, err)
 		return

@@ -14,7 +14,6 @@ var secret_key = "salom"
 type Token struct {
 	AccessToken  string
 	RefreshToken string
-	ExpiresIn    int32
 }
 
 func (repo *UserRepository) GENERATEJWTToken(user *pb.LoginRequest) (*pb.LoginResponse, error) {
@@ -47,6 +46,5 @@ func (repo *UserRepository) GENERATEJWTToken(user *pb.LoginRequest) (*pb.LoginRe
 	return &pb.LoginResponse{
 		AccessToken:  access,
 		RefreshToken: refresh,
-		ExpiresIn:    3 * 3600, 
 		}, nil
 	}
